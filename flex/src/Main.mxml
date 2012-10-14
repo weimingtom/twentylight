@@ -1,0 +1,129 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<mx:Application
+	xmlns:mx="http://www.adobe.com/2006/mxml"
+	frameRate="24"
+	creationComplete="creationComplete()" 
+	enterFrame="enterFrame(event)">
+	<mx:Script>
+		<![CDATA[
+			import flash.display.Bitmap;
+			import flash.display.Shape;
+			import flash.display.Sprite;
+			import flash.events.MouseEvent;
+			import flash.events.Event;
+			import flash.geom.Rectangle;
+			import mx.controls.Alert;
+			import mx.containers.Canvas;
+			import mx.controls.Image;
+			
+			//预览缓冲
+			private var shapeCanvas:Sprite = new Sprite();
+			
+			[Embed(source='Windows_XP_Bliss.jpg')]
+			private static var imgCls:Class;
+			private static var imgBitmap:Bitmap = Bitmap(new imgCls);
+			
+			public function creationComplete():void
+			{
+				onMemRender();
+				img.source = shapeCanvas;
+				if (true)
+				{
+					shapeCanvas.graphics.clear();
+					shapeCanvas.graphics.beginFill(0x00ff00, 1);
+					shapeCanvas.graphics.drawRect(0, 0, 1000, 1000);
+					shapeCanvas.graphics.endFill();
+				}
+				if (true)
+				{
+					shapeCanvas.graphics.clear();
+					shapeCanvas.graphics.beginBitmapFill(imgBitmap.bitmapData);
+					shapeCanvas.graphics.drawRect(0, 0, imgBitmap.width, imgBitmap.height);
+					shapeCanvas.graphics.endFill();
+				}
+			}
+			
+			public function enterFrame(event:Event):void
+			{
+				
+			}
+			
+			public function onAbout():void
+			{
+				Alert.show("a simple editor.");
+			}
+			
+			public function onExit():void
+			{
+				fscommand("quit");
+			}
+			
+			public function onMemRender():void
+			{
+				mem.label = Math.round((System.totalMemory / 1024 / 1024) * 100) / 100 + ' MB';
+			}
+			
+			public function onImageMouseDown(event:MouseEvent):void
+			{
+				//trace("onCanvasMouseDown:" + event.localX + ", " + event.localY);
+			}
+			
+			public function onImageMouseUp(event:MouseEvent):void
+			{
+				//trace("onCanvasMouseUp:" + event.localX + ", " + event.localY);
+			}
+			
+			public function onScroll():void
+			{
+				//trace("onScroll");
+			}
+		]]>
+	</mx:Script>
+	
+	<!-- 标题横幅及菜单按钮 -->
+	<mx:HBox width="100%" fontSize="8">
+		<mx:Label text="Editor" fontWeight="bold" fontSize="16"/>
+		<mx:Spacer width="100%"/>
+		<mx:LinkButton id="mem" click="System.gc();" render="onMemRender()" 
+			toolTip="点击运行垃圾回收器 (仅适用于调试版flash播放器)" />
+		<mx:LinkButton label="关于" click="onAbout()" 
+			toolTip="版本信息"/>
+		<mx:LinkButton label="退出" click="onExit()" 
+			toolTip="退出程序" />
+	</mx:HBox>
+	
+	<!-- 内容，也可以用HBox代替 -->
+	<mx:VDividedBox width="100%" height="100%">
+		<!-- 上方设计区 -->
+		<mx:HDividedBox width="100%" height="80%">	
+			<!-- 左工具栏 -->
+			<mx:TabNavigator id="tabs" width="30%" height="100%" styleName="panelTabs">
+				<mx:Box width="100%" height="100%" label="角色选择" styleName="tabbedPanel">
+				</mx:Box>
+			</mx:TabNavigator>
+			
+			<!-- 中间预览区 -->
+			<mx:Panel id="preview" title="预览"
+				width="100%" height="100%" layout="vertical">
+				<mx:Image id="img" 
+					mouseDown="onImageMouseDown(event)" 
+					mouseUp="onImageMouseUp(event)" />
+			</mx:Panel>
+			
+			<!-- 右属性栏 -->
+			<mx:TabNavigator width="30%" height="100%" styleName="panelTabs">
+				<mx:Box width="100%" height="100%" label="属性设置" 
+					styleName="tabbedPanel">
+				</mx:Box>
+			</mx:TabNavigator>
+		</mx:HDividedBox>
+		
+		<!-- 下方代码编辑器 -->
+		<mx:TabNavigator width="100%" height="20%" styleName="panelTabs">
+			<mx:Box width="100%" height="100%" label="编辑器" 
+				styleName="tabbedPanel">
+			</mx:Box>
+		</mx:TabNavigator>
+	</mx:VDividedBox>
+	<!-- 页脚 -->
+</mx:Application>
